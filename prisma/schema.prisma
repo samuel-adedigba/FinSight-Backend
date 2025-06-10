@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("USER")
+  phone     String?  @unique
+  bvn       String?  @unique
+  nin       String?  @unique
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts      BankAccount[]
+  webhookEvents WebhookEvent[]
+  beneficiary   Beneficiary[]
+  Notification  Notification[]
+  budgets       Budget[]
+  categories    Category[]
+}
+
+model BankAccount {
+  id            Int      @id
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int
+  isActive      Boolean  @default(false)
+  bankCode      Int
+  bankName      String
+  accountNumber String   @unique
+  currency      String
+  balance       Float    @default(0)
+  createdAt     DateTime @default(now())
+
+  transactions Transaction[]
+  transfersOut Transfer[]    @relation("TransfersOut")
+  transfersIn  Transfer[]    @relation("TransfersIn")
+  Beneficiary  Beneficiary[]
+}
+
+model Transaction {
+  id                    String      @id @default(uuid())
+  accountId             Int
+  account               BankAccount @relation(fields: [accountId], references: [id])
+  type                  String
+  amount                Float
+  tag                   String
+  description           String?
+  createdAt             DateTime    @default(now())
+  sentTo                String?
+  senderAccountNumber   String?
+  receivedFrom          String?
+  receiverAccountNumber String?
+}
+
+model Transfer {
+  id             Int         @id @default(autoincrement())
+  fromAccount    BankAccount @relation("TransfersOut", fields: [fromAccountId], references: [id])
+  fromAccountId  Int
+  toAccount      BankAccount @relation("TransfersIn", fields: [toAccountId], references: [id])
+  toAccountId    Int
+  amount         Float
+  status         String      @default("pending")
+  idempotencyKey String?     @unique
+  initiatedAt    DateTime    @default(now())
+  completedAt    DateTime?
+}
+
+model WebhookEvent {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  eventType  String
+  payload    Json
+  receivedAt DateTime @default(now())
+}
+
+model Bank {
+  id   Int    @id @default(autoincrement())
+  code Int    @unique
+  name String @unique
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String
+  payload   Json
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Beneficiary {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  saved     Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  user      User        @relation(fields: [userId], references: [id])
+  account   BankAccount @relation(fields: [accountId], references: [id])
+  accountId Int
+}
+
+model Category {
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  name    String
+  type    String
+  user    User     @relation(fields: [userId], references: [id])
+  budgets Budget[]
+}
+
+model Budget {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  categoryId Int
+  name       String?
+  amount     Float
+  startDate  DateTime
+  endDate    DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime?  @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+}

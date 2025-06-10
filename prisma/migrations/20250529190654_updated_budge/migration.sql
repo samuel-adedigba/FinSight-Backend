@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Budget" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "name" TEXT,
+ADD COLUMN     "updatedAt" TIMESTAMP(3);

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Step 2 — Activate Accounts</title>
+  <link rel="stylesheet" href="/static/css/step2.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- FinSight Logo -->
+    <div class="logo-container">
+      <img src="/static/images/finsight-logo.png" alt="FinSight Logo" class="logo">
+    </div>
+
+    <header>
+      <button class="back" onclick="window.history.back()">
+        ↵ Back
+      </button>
+      <h1>Step 2: Activate Your Accounts</h1>
+      <p>Choose which accounts to activate below. These will be synced for future transactions.</p>
+    </header>
+
+    <div id="message"></div>
+
+    <form id="step2Form">
+      <div id="accounts" class="account-list">
+        <!-- Accounts will populate here -->
+      </div>
+      <button type="submit" class="submit-btn">Save & Continue</button>
+    </form>
+  </div>
+
+  <div class="spinner hidden"></div>
+
+  <script src="/static/js/step2.js"></script>
+</body>
+</html>

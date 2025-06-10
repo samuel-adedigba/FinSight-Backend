@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinSight | Verify Identity</title>
+  <link rel="stylesheet" href="/static/css/step1.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🔐 Verify Your Identity</h1>
+      <p>Securely link your BVN and NIN to protect your account.</p>
+
+      <div id="message"></div>
+
+      <form id="step1Form">
+        <label for="bvn">BVN</label>
+        <div class="input-group">
+          <input id="bvn" name="bvn" type="text" required pattern="\d{11}" placeholder="Enter 11-digit BVN">
+        </div>
+
+        <label for="nin">NIN</label>
+        <div class="input-group">
+          <input id="nin" name="nin" type="text" required pattern="\d{11,}" placeholder="Enter your NIN">
+        </div>
+
+        <button type="submit" id="submitBtn">Continue</button>
+      </form>
+
+      <p class="note">We encrypt your information end-to-end and will never share it without your consent.</p>
+    </div>
+  </div>
+
+  <script src="/static/js/step1.js"></script>
+</body>
+</html>

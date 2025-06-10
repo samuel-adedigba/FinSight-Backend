@@ -1,0 +1,133 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #f0f4f8, #d9e2ec);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  animation: fadeIn 0.6s ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-evenly; */
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #007bff;
+  transition: transform 0.2s;
+  border-radius: 6px;
+}
+.back-btn:hover {
+  transform: scale(1.2);
+}
+
+/* .logo {
+  width: 100px;
+  height: 100px;
+} */
+
+.username {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+h1 {
+  margin: 1rem 0;
+  text-align: center;
+  color: #333;
+}
+
+#accounts {
+  min-height: 2rem;
+}
+
+.account {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  margin-bottom: 0.5rem;
+  background: #e9ffe9;
+  border-radius: 6px;
+  transition: transform 0.3s;
+}
+.account:hover {
+  transform: translateY(-2px);
+}
+
+.action button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  border: none;
+  transition: background 0.3s, transform 0.2s;
+}
+button {
+  cursor: pointer;
+}
+
+.edit {
+  background: #ffc107;
+  color: #212529;
+}
+.continue {
+  background: #007bff;
+  color: white;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.spinner {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner::after {
+  content: '';
+  width: 48px;
+  height: 48px;
+  border: 5px solid #007bff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hidden {
+  display: none !important;
+}

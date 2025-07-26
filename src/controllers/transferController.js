@@ -11,9 +11,9 @@ export async function createTransferController(req, res) {
     const amount = Number(req.body.amount);
     const fromBankCode = Number(req.body.fromBankCode);
     const toBankCode = Number(req.body.toBankCode);
-    const fromTag = req.body.fromTag || "transfer";
+    const fromTag = req.body.fromTag || "others";
     const validFromTag = fromTag && typeof fromTag === 'string' && fromTag.trim().length > 0 && fromTag.toLowerCase();
-    const toTag = req.body.toTag || "transfer";
+    const toTag = req.body.toTag || "others";
     const validToTag = toTag && typeof toTag === 'string' && toTag.trim().length > 0 && toTag.toLowerCase();
     const idempotencyKey = req.header("Idempotency-Key");
 

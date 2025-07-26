@@ -1,0 +1,60 @@
+services:
+  # 1) Web server (API endpoint only)
+  - type: web
+    name: finsight-app
+    env: node
+    plan: standard
+    buildCommand: 'npm install'
+    startCommand: 'npm start'
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: finsight-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: finsight-queue
+          property: connectionString
+      - key: TRANSFORMERS_CACHE_PATH
+        value: /var/data/transformers_cache
+      - key: SIMILARITY_THRESHOLD
+        value: '0.4'
+    disk:
+      name: transformers-cache-disk
+      mountPath: /var/data
+      sizeGB: 1
+
+  # 2) Worker (BullMQ consumer + AI embedding)
+  - type: worker
+    name: finsight-categorizer
+    env: node
+    plan: standard
+    buildCommand: 'npm install'
+    startCommand: 'node worker.js'
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: finsight-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: finsight-queue
+          property: connectionString
+      - key: TRANSFORMERS_CACHE_PATH
+        value: /var/data/transformers_cache
+      - key: SIMILARITY_THRESHOLD
+        value: '0.4'
+    disk:
+      name: transformers-cache-disk
+      mountPath: /var/data
+      sizeGB: 1
+
+  # 3) Postgres
+  - type: postgres
+    name: finsight-db
+
+  # 4) Redis for queue
+  - type: redis
+    name: finsight-queue

@@ -49,6 +49,7 @@ npx prisma db push
 
 # Inspect your database:
 psql -U postgres -d finSightDB
+psql -h localhost -p 5433 -U postgres -d finSightDB
 npx prisma studio
 npx prisma format
 

@@ -1,49 +1,64 @@
 import { createCategory, deleteCategory, listUserCategories, updateCategory } from "../services/categoryService.js";
 import { prisma } from '../db/prisma.js';
 
+
+const CategoryTypeEnum = {
+  INCOME: 'INCOME',
+  EXPENSE: 'EXPENSE'
+};
+
 export async function createCategoryController(req, res) {
   try {
-    const userId = req.user?.id; // Optional chaining for safety
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
     const { name, type } = req.body;
 
-    // 🚦 Validate required fields
     if (!name || !type) {
-      return res.status(400).json({ error: 'Name and type are required' });
+      return res.status(400).json({ error: 'Name and type are required.' });
     }
 
-    const validName = typeof name === 'string' && name.trim().toLowerCase();
-    const validType = typeof type === 'string' && type.trim().toUpperCase();
+    const trimmedName = name.trim().toLowerCase();
+    const upperType = type.trim().toUpperCase();
 
-    if (!validName || !validType) {
-      return res.status(400).json({ error: 'Invalid name or type format' });
+    if (!CategoryTypeEnum[upperType]) {
+      return res.status(400).json({ error: 'Invalid category type. Must be INCOME or EXPENSE.' });
     }
 
-    // 🔍 Check if category already exists for the user (by name and type)
+    const enumType = CategoryTypeEnum[upperType];
+
+    // Check if the category exists
     const existingCategory = await prisma.category.findFirst({
       where: {
         userId,
-        name: validName,
-        type: validType
+        name: trimmedName,
+        type: enumType
       }
     });
 
     if (existingCategory) {
-      return res.status(400).json({ error: 'Category already exists' });
+      return res.status(400).json({ error: 'Category already exists.' });
     }
 
-    // ✨ Create the category
-    const category = await createCategory({
+    // Create the category
+    const category = await prisma.category.create({
       data: {
         userId,
-        name: validName,
-        type: validType
+        name: trimmedName,
+        type: enumType
       }
     });
 
-    res.status(201).json({ message: "Category created successfully", category });
+    res.status(201).json({
+      message: 'Category created successfully',
+      category
+    });
+
   } catch (err) {
     console.error('Create category failed:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 

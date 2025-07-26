@@ -1,6 +1,6 @@
 import { prisma } from '../db/prisma.js';
 
-export async function createNotification(type, payload) {
+export async function   createNotification(type, payload) {
   // Determine target users
   const userIds = [];
   if (payload.userId)     userIds.push(payload.userId);

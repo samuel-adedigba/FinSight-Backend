@@ -37,6 +37,9 @@ import { fileURLToPath } from 'url';
 import categoryRouter from './routes/categoryRoutes.js';
 import budgetRoutes from './routes/budgetRoutes.js';
 import analyticsRoute from './routes/analyticsRoute.js';
+import safeToSpendRouter from './routes/safeToSpendRoutes.js';
+import recurringTransactionRouter from './routes/recurringTransactionRoute.js';
+import statementRoutes from './routes/statementRoutes.js';
 
 // Polyfill __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -77,7 +80,9 @@ app.get('/sync/step3', (req, res) =>
 app.get('/sync/step4', (req, res) =>
   res.sendFile(path.join(__dirname, '..', 'public', 'step4.html'))
 );
-
+app.get('/upload', (req, res) =>
+  res.sendFile(path.join(__dirname, '..', 'public', 'upload.html'))
+);
 
 app.use('/api/auth', userRoutes);
 app.use('/bank', bankRouter);
@@ -88,4 +93,7 @@ app.use('/transactions', transactionRouter);
 app.use('/categories', categoryRouter); 
 app.use('/budget', budgetRoutes); 
 app.use('/analytics', analyticsRoute); 
+app.use('/safe-to-spend', safeToSpendRouter);
+app.use('/recurring-transaction', recurringTransactionRouter);
+app.use('/statements', statementRoutes);
 export default app;

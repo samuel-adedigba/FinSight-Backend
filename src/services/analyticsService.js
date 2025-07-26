@@ -237,3 +237,53 @@ export async function getAnalyticsTrend({
     totalExpense: Number(r.total_expense) || 0
   }));
 }
+
+export async function getBudgetProgress({
+  userId, startDate, endDate
+}){
+    const budgets = await prisma.budget.findMany({
+      where : {userId, 
+        startDate: {
+          lte: new Date(endDate),
+        },
+        OR : [
+          {endDate:  null} ,
+          {
+            endDate: { 
+              gte:  new Date(startDate)
+            }
+          }
+        ]
+      },
+      include : {category: true}
+
+    })
+
+const progressList = await Promise.all(
+  budgets.map(async (b) => {
+    const periodEnd = b.endDate || endDate;
+    const spentAgg = await prisma.transaction.aggregate({
+      _sum: { amount: true },
+      where: {
+        account:  { userId },
+        type:      'debit',
+        tag:       b.category.name,
+        createdAt: {
+          gte: b.startDate,
+          lte: periodEnd
+        }
+      }
+    });
+
+    const spent = spentAgg._sum.amount || 0;
+    return {
+      budgetId:   b.id,
+      category:   b.category.name,
+      allocated:  b.amount,
+      spent,
+      remaining:  b.amount - spent
+    };
+  })
+);
+return progressList;
+};

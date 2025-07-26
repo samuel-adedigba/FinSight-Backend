@@ -15,7 +15,7 @@ export async function createCategory({ userId, name, type }) {
 export async function listUserCategories(userId) {
   return prisma.category.findMany({
     where: { userId },
-    orderBy: { name: 'asc' }
+ //   orderBy: { name: 'asc' }
   });
 }
 export async function getCategoryById({userId, id}) {

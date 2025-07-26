@@ -1,4 +1,4 @@
-import { getTransactionById, getTransactionsByAccountId, getTransactionsForAUser } from "../services/transactionService.js";
+import { clearUserTransactions, getTransactionById, getTransactionsByAccountId, getTransactionsForAUser } from "../services/transactionService.js";
 
 
 
@@ -52,5 +52,25 @@ export async function getTransactionByIdController(req, res) {
   } catch (error) {
     console.error("Fetching transaction by ID failed:", error);
     res.status(500).json({ error: error.message || "Internal server error" });
+  }
+}
+
+export async function clearUserTransactionsHandler(
+  req,
+  res,
+  next
+) {
+  try {
+    const userId = Number(req.user.id);
+    const accountId = Number(req.params.accountId);
+    if (isNaN(accountId)) {
+      return res.status(400).json({ error: 'Invalid accountId' });
+    }
+    const { deletedCount } = await clearUserTransactions({ userId, accountId });
+    return res
+      .status(200)
+      .json({ message: 'Transactions cleared', deletedCount });
+  } catch (error) {
+    next(error);
   }
 }

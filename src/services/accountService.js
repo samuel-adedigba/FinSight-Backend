@@ -13,10 +13,22 @@ export async function createUserBankAccount( {
 };
 
 export async function getUserBankAccount(userId) {
-  return prisma.user.findUnique({
-    where: { id: Number(userId) },
+  const user_Id = Number(userId);
+  if (!user_Id) {
+    throw new Error("User ID is required");
+  }
+  const user = await prisma.user.findUnique({
+     where: { id: user_Id },
     include: { accounts: true }
   });
+  if (!user) {
+    throw new Error(`User with ID ${user_Id} not found`);
+  }
+  const balanceAgg = await prisma.bankAccount.aggregate({
+    where: { userId: user_Id },
+    _sum: { balance: true } 
+  })
+  return { total_account_balance: balanceAgg._sum.balance || 0, user };
 };
 
 export async function getActiveBankAccounts(userId) {

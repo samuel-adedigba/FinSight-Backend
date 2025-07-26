@@ -1,4 +1,4 @@
-import { getAnalyticsTrend, getBoardByCategory, getCategorySummary, getSummary } from "../services/analyticsService.js";
+import { getAnalyticsTrend, getBoardByCategory, getCategorySummary, getSummary, getBudgetProgress } from "../services/analyticsService.js";
 
 
 export async function summaryController(req, res) {
@@ -228,4 +228,34 @@ export async function getAnalyticsTrendController(req, res) {
     console.error('getAnalyticsTrendController error:', err);
     return res.status(500).json({ error: 'Internal server error', details: err.message });
   }
+};
+
+export async function budgetProgressController(req, res) {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const { month } = req.query; // “YYYY-MM”
+    if (!month) {
+      return res.status(400).json({ error: '`month` query param is required' });
+    }
+
+    // 1) Compute exact dates
+    const [year, mon] = month.split('-').map(Number);
+    const startDate = new Date(year, mon - 1, 1);
+    const endDate   = new Date(year, mon, 0, 23, 59, 59, 999);
+
+    // 2) Call service
+    const progressList = await getBudgetProgress({ userId, startDate, endDate });
+    const monthName = startDate.toLocaleString('default', { month: 'long' });
+
+    // 3) Return
+    return res.json({ message: `Budget Progress for each categpry in ( ${monthName} )`, progress: progressList });
+  } catch (err) {
+    console.error('Budget Progress Error:', err);
+    res.status(500).json({ error: 'Internal server error', details: err.message });
+  }
 }
+

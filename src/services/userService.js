@@ -37,8 +37,12 @@ export async function getUserById(id) {
   return prisma.user.findUnique({ where: { id } });
 }
 
+
 export function getUserByEmail(email) {
-  return prisma.user.findUnique( { where: {email} }) ;
+  if (!email || typeof email !== 'string') {
+    throw new Error('A valid email string is required');
+  }
+  return prisma.user.findUnique({ where: { email } });
 }
 export async function updateUserDetails({id, email,name}) {
   const user = await prisma.user.update({

@@ -1,6 +1,8 @@
 // services/transactionService.ts
 import { prisma } from '../db/prisma.js';
+import redis from '../db/redis.js';
 import { publishEvent } from "../messaging/redisPublisher.js";
+import { TRANSFER_COMPLETED } from '../types/event.js';
 
 export async function createUserTransfer({
   userId,
@@ -99,12 +101,13 @@ export async function createUserTransfer({
   });
 
   // 5) Fire-and-forget: publish notification without holding up response
-  publishEvent('TRANSFER_COMPLETED', {
+  publishEvent(TRANSFER_COMPLETED, {
     transferId: completed.id,
     fromUserId: fromAcct.userId,
     toUserId:   toAcct.userId
   }).catch(err => console.error('Publish failed', err));
 
+   await redis.del(`safe-to-spend:${fromAcct.userId}`);
   return completed;
 };
 
@@ -139,5 +142,37 @@ export async function getTransactionById(transactionId) {
   });
 };
 
+export async function findPastTransactions(userId) {
+  return prisma.transaction.findMany({
+    where: {
+      account: {
+        userId: Number(userId)
+      }
+    },
+    orderBy: { createdAt: 'desc' },
+    // include: { account: true }
+  });
+};
 
 
+export async function clearUserTransactions(input) {
+  const { userId, accountId } = input;
+
+  if (typeof accountId !== 'number' || isNaN(accountId)) {
+    throw new Error('Invalid accountId');
+  }
+
+  const account = await prisma.bankAccount.findUniqueOrThrow({
+    where: { id: accountId },
+    include: { user: true },
+  });
+  if (account.userId !== userId) {
+    throw new Error('Account does not belong to this user');
+  }
+
+  const result = await prisma.transaction.deleteMany({
+    where: { userId, accountId },
+  });
+
+  return { deletedCount: result.count };
+}

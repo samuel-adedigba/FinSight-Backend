@@ -94,43 +94,6 @@ sudo systemctl start redis-server
 sudo systemctl enable redis-server
 
 
-# FinSight Backend
-
-A comprehensive financial insights backend service built with Node.js, providing real-time data processing and analytics capabilities.
-
-## 🎯 Project Overview
-
-FinSight Backend is a scalable microservices-based application designed to process financial data, provide analytics, and deliver insights through RESTful APIs. The system leverages modern technologies including PostgreSQL for data persistence, Redis for caching, and Apache Kafka for event-driven messaging.
-
-### Key Features
-
--   **Real-time Data Processing**: Event-driven architecture using Kafka for handling financial data streams.
--   **Secure Authentication**: JWT-based authentication and authorization system.
--   **Scalable Database Layer**: PostgreSQL with Prisma ORM for type-safe database operations.
--   **High-Performance Caching**: Redis integration for optimized data retrieval.
--   **Microservices Architecture**: Modular design with clear separation of concerns for scalability and maintainability.
-
-## 🏗️ Architecture
-
-### System Components# FinSight Backend
-
-A comprehensive financial insights backend service built with Node.js, providing real-time data processing and analytics capabilities.
-
-## 🎯 Project Overview
-
-FinSight Backend is a scalable microservices-based application designed to process financial data, provide analytics, and deliver insights through RESTful APIs. The system leverages modern technologies including PostgreSQL for data persistence, Redis for caching, and Apache Kafka for event-driven messaging.
-
-### Key Features
-
--   **Real-time Data Processing**: Event-driven architecture using Kafka for handling financial data streams.
--   **Secure Authentication**: JWT-based authentication and authorization system.
--   **Scalable Database Layer**: PostgreSQL with Prisma ORM for type-safe database operations.
--   **High-Performance Caching**: Redis integration for optimized data retrieval.
--   **Microservices Architecture**: Modular design with clear separation of concerns for scalability and maintainability.
-
-## 🏗️ Architecture
-
-### System Components
 Development Workflow
 Database Management
 # Create new migration
@@ -214,6 +177,7 @@ docker build -t finsight-backend .
 
 # Run container
 docker run -p 5000:5000 finsight-backend
+
 
 
 🤝 Contributing

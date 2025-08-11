@@ -67,5 +67,4 @@ yarn.lock
 pnpm-lock.sh
 
 README
-SELECT node_modules nodemon.json package.json package-lock.json prisma public README.md src test-connection.js tsconfig
-SELECT node_modules nodemon.json package.json package-lock.json prisma public README.md src test-connection.js tsconfig.json FROM Category LIMIT 10
+tran.js
